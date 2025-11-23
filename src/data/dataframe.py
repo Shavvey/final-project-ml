@@ -24,13 +24,13 @@ class DataFrame:
 
     @staticmethod
     def collect(data_dir: str) -> list["DataFrame"]:
-        """Collect images inside directory into a list of dataframes"""
+        """ Collect images inside directory into a list of dataframes """
         data_dir_path = Path(data_dir)
         dfs: list[DataFrame] = []
         # walk data directory, works similar to os.walk()
         for root, _, files in data_dir_path.walk(follow_symlinks=False):
             for file in files:
-                path = root / file
+                path = root / file # append filename to root path to get path to image
                 df = DataFrame._df_from_image(path)
                 dfs.append(df)
         return dfs
