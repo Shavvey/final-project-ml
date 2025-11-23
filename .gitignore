@@ -1,0 +1,14 @@
+# ignore open excel files
+**/~$*.xlsx
+# config and pycache stuff
+**/.DS_Store
+**/.vscode
+**/__pycache__
+# latex stuff
+**/*.aux
+**/*.log
+**/*.pdf
+json
+csv
+# don't check dataset into VCS!
+ACRIMA_data
