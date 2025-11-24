@@ -48,6 +48,6 @@ class DataFrame:
     @staticmethod
     def get_labels(dfs: list["DataFrame"]) -> npt.NDArray:
         """Returns all the labels inside the dataframes"""
-        convert = lambda x: 1 if x is True else -1
-        labels = list(map(convert, [df for df in dfs]))
-        return np.array(labels)
+        convert = lambda x: np.array([1, 0]) if x is True else np.array([0, 1])
+        labels = list(map(convert, [df.g_label for df in dfs]))
+        return np.array(labels, dtype=float)

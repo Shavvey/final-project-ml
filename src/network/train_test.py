@@ -6,7 +6,6 @@ from typing import Optional
 
 from data.make_data import get_ACRIMA
 from network.nn import CNN
-import google
 
 
 # NOTE: we may need to implement are own transform for ACRIMA class later?
@@ -29,26 +28,30 @@ def train(epochs: int):
     model = CNN()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     # optionally apply transforms here
-    full_dataset = get_ACRIMA()
+    full_dataset = get_ACRIMA(transform = IMAGE_TRANSFORM)
     train_dataset, test_dataset = torch.utils.data.random_split(
         full_dataset, [0.8, 0.2]
     )
     train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=16, shuffle=True
+        train_dataset, batch_size=20, shuffle=True
     )
-    for _ in range(epochs):
+    for epoch in range(epochs):
         running_loss = 0.0
         # do the training optimization step for the number of batches we have
-        for batch_idx, (image, label) in enumerate(train_loader):
+        for batch_idx, (images, labels) in enumerate(train_loader):
+            #print(image[0])
             # zero out param gradients
             optimizer.zero_grad()
             # use image to obtain outputs
-            outputs = model(image)
+            outputs = model(images)
             # compute the loss
-            loss = criterion(image, label)
+            loss = criterion(outputs, labels)
             # backprop
             loss.backward()
             # making a optimizaton step
             optimizer.step()
             # find the running loss
             running_loss += loss.item()
+            if batch_idx % 5 == 0:    # print every 2000 mini-batches
+                print(f'[{epoch + 1}, {batch_idx + 1:5d}] loss: {running_loss / 20:.3f}')
+                running_loss = 0.0

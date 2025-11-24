@@ -1,14 +1,11 @@
 from data.dataset import ACRIMA, Dataset
 from data.dataframe import DataFrame, DATA_DIRECTORY
 from PIL import Image
+from network.train_test import train
 
 
 def main():
-    dfs = DataFrame.collect(DATA_DIRECTORY)
-    imgs = DataFrame.get_images(dfs)
-    labels = DataFrame.get_labels(dfs)
-    dataset = ACRIMA(imgs, labels)
-    
+    train(5)
 
 
 if __name__ == "__main__":
