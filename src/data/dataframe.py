@@ -5,6 +5,7 @@ import numpy as np
 import numpy.typing as npt
 
 DATA_DIRECTORY = "ACRIMA_data"
+RESIZE_DIMS = (350, 350)
 
 
 @dataclass(frozen=True)  # ensures dataframe is read only
@@ -20,6 +21,7 @@ class DataFrame:
         filename: str = image_path.name
         g_label = True if filename.__contains__("_g_") else False
         with Image.open(image_path) as image:
+            image = image.resize(RESIZE_DIMS)
             image_array = np.asarray(image)
         return DataFrame(image_array, g_label, filename)
 
@@ -37,14 +39,16 @@ class DataFrame:
         return dfs
 
     @staticmethod
-    def get_images(dfs: list["DataFrame"]) -> list[npt.NDArray]:
+    def get_images(dfs: list["DataFrame"]) -> npt.NDArray:
+        print(len(dfs))
         image_list = []
         for df in dfs:
             image_list.append(df.image_array)
-        return image_list
+        return np.array(image_list)
 
     @staticmethod
-    def get_labels(dfs: list["DataFrame"]) -> list[int]:
+    def get_labels(dfs: list["DataFrame"]) -> npt.NDArray:
         """Returns all the labels inside the dataframes"""
         convert = lambda x: 1 if x is True else -1
-        return list(map(convert, [df for df in dfs]))
+        labels = list(map(convert, [df for df in dfs]))
+        return np.array(labels)
