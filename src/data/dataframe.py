@@ -40,7 +40,6 @@ class DataFrame:
 
     @staticmethod
     def get_images(dfs: list["DataFrame"]) -> npt.NDArray:
-        print(len(dfs))
         image_list = []
         for df in dfs:
             image_list.append(df.image_array)
