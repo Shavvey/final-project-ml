@@ -9,10 +9,11 @@ DATA_DIRECTORY = "ACRIMA_data"
 class DataFrame:
     image: bytes  # bytes that represent the dataframe
     g_label: bool  # either gluacoma (1) or not gluaomcoma (0)
+    filename: str
 
     @staticmethod
     def _df_from_image(image_path: Path) -> "DataFrame":
-        """"""
+        """Internal method to load dataframe given an image path"""
         # get label, if _g_ is in filename. label is true, else false
         filename: str = image_path.name
         g_label = True if filename.__contains__("_g_") else False
@@ -20,25 +21,27 @@ class DataFrame:
             # read image as a series of bytes
             image_data = image.read()
             enc_bytes = b64.b64encode(image_data)
-            return DataFrame(enc_bytes, g_label)
+            return DataFrame(enc_bytes, g_label, filename)
 
     @staticmethod
     def collect(data_dir: str) -> list["DataFrame"]:
-        """ Collect images inside directory into a list of dataframes """
+        """Collect images inside directory into a list of dataframes"""
         data_dir_path = Path(data_dir)
         dfs: list[DataFrame] = []
         # walk data directory, works similar to os.walk()
         for root, _, files in data_dir_path.walk(follow_symlinks=False):
             for file in files:
-                path = root / file # append filename to root path to get path to image
+                path = root / file  # append filename to root path to get path to image
                 df = DataFrame._df_from_image(path)
                 dfs.append(df)
         return dfs
 
     @staticmethod
     def get_images(dfs: list["DataFrame"]) -> list[bytes]:
+        """Returns bytes of the images inside the dataframes"""
         return [df.image for df in dfs]
 
     @staticmethod
     def get_labels(dfs: list["DataFrame"]) -> list[bool]:
+        """Returns all the labels inside the dataframes"""
         return [df.g_label for df in dfs]
