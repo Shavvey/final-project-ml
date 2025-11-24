@@ -1,2 +1,2 @@
 [tool.pyright]
-include = ["src/data", "src"]
+include = ["src", "src/data", "src/network"]

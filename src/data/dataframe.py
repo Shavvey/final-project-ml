@@ -1,13 +1,15 @@
 from dataclasses import dataclass
-import base64 as b64
 from pathlib import Path
+from PIL import Image
+import numpy as np
+import numpy.typing as npt
 
 DATA_DIRECTORY = "ACRIMA_data"
 
 
 @dataclass(frozen=True)  # ensures dataframe is read only
 class DataFrame:
-    image: bytes  # bytes that represent the dataframe
+    image_array: npt.NDArray
     g_label: bool  # either gluacoma (1) or not gluaomcoma (0)
     filename: str
 
@@ -17,11 +19,9 @@ class DataFrame:
         # get label, if _g_ is in filename. label is true, else false
         filename: str = image_path.name
         g_label = True if filename.__contains__("_g_") else False
-        with open(image_path, "rb") as image:
-            # read image as a series of bytes
-            image_data = image.read()
-            enc_bytes = b64.b64encode(image_data)
-            return DataFrame(enc_bytes, g_label, filename)
+        with Image.open(image_path) as image:
+            image_array = np.asarray(image)
+        return DataFrame(image_array, g_label, filename)
 
     @staticmethod
     def collect(data_dir: str) -> list["DataFrame"]:
@@ -37,11 +37,14 @@ class DataFrame:
         return dfs
 
     @staticmethod
-    def get_images(dfs: list["DataFrame"]) -> list[bytes]:
-        """Returns bytes of the images inside the dataframes"""
-        return [df.image for df in dfs]
+    def get_images(dfs: list["DataFrame"]) -> list[npt.NDArray]:
+        image_list = []
+        for df in dfs:
+            image_list.append(df.image_array)
+        return image_list
 
     @staticmethod
-    def get_labels(dfs: list["DataFrame"]) -> list[bool]:
+    def get_labels(dfs: list["DataFrame"]) -> list[int]:
         """Returns all the labels inside the dataframes"""
-        return [df.g_label for df in dfs]
+        convert = lambda x: 1 if x is True else -1
+        return list(map(convert, [df for df in dfs]))

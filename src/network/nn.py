@@ -18,5 +18,6 @@ class CNN(nn.Module):
         x = self.pool(func.relu(self.conv2(x)))
         x = torch.flatten(x, 1)  # flatten all dimensions execpt batch
         x = func.relu(self.fc1(x))
+        x = func.relu(self.fc2(x))
         x = self.fc3(x)
         return x
