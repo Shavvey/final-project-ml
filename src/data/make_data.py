@@ -21,4 +21,4 @@ def get_ACRIMA(from_serialized_npz: Optional[bool] = None) -> ACRIMA:
         return ACRIMA(images, labels)
     else:
         raise Exception("Not implemented yet!")
-    
+
