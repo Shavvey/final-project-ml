@@ -1,8 +1,10 @@
 import unittest
 import torchvision.transforms as transforms
-from data.make_data import get_ACRIMA
+import data.make_data as make
 import numpy as np
 import matplotlib.pyplot as pp
+import torch
+import torchvision
 
 
 class TestACRIMADataset(unittest.TestCase):
@@ -14,11 +16,10 @@ class TestACRIMADataset(unittest.TestCase):
             ]
         )
         # retreive dataset, do a basic transform
-        dataset = get_ACRIMA(EXAMPLE_TRANSFORM)
+        dataset = make.get_ACRIMA(EXAMPLE_TRANSFORM)
         # show one of theimages from dataset, for fun
         img = dataset.images[0]
-        npimg = img.numpy()
-        pp.imshow(np.transpose(npimg, (1, 2, 0)))
+        pp.imshow(np.transpose(img, (0, 1, 2)))
         pp.show()
 
 

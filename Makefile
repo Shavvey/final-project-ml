@@ -1,10 +1,10 @@
 INTERPRETER=python3
 MAIN=src/main.py
-TESTDIR=src/test
+TOPLEVELDIR=src
 
 run: $(MAIN)
 	$(INTERPRETER) $(MAIN)
 
 test:
-	$(INTERPRETER) -m unittest discover -s $(TESTDIR)
+	$(INTERPRETER) -m unittest discover $(TOPLEVELDIR)
 
