@@ -3,7 +3,10 @@ import torch
 
 
 class ACRIMA(Dataset):
-    """Pytorch subclass for out ACRIMA dataset. Expecting data and targets to be numpy arrays"""
+    """
+    Pytorch Dataset subclass for our ACRIMA dataset.
+    Constructor can take lists or numpy arrays, so type annotations have been left out.
+    """
 
     def __init__(self, images, labels, transform=None):
         self.images = images

@@ -19,6 +19,7 @@ IMAGE_TRANSFORM = transforms.Compose(
 def init_device(verbose: Optional[bool] = None):
     # use gpu CUDA API if able, otherwise just use the regular cpu
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # TODO: implement GPU device copy when we have gpu available
     if verbose == True:
         print(device)
 
@@ -27,7 +28,7 @@ def train_test_split(
     split_ratios: list[float], transform: Optional[Compose] = None
 ) -> tuple[Subset, Subset]:
     full_dataset = get_ACRIMA(transform=transform)
-    # get random split of the initial dataset into two subset, one test and one train
+    # get random split of the initial dataset into two subsets, one test and one train
     train_dataset, test_dataset = torch.utils.data.random_split(
         full_dataset, split_ratios
     )
@@ -80,6 +81,7 @@ def train_network(
 def test_network(model: CNN, test_dataset: Subset, test_log: Optional[bool] = None):
     # set model into eval mode
     model.eval()
+    # create test loader from the dataset
     test_loader = torch.utils.data.DataLoader(test_dataset)
 
     num_correct, num_samples = 0, 0
@@ -87,17 +89,17 @@ def test_network(model: CNN, test_dataset: Subset, test_log: Optional[bool] = No
         for train_idx, (image, label) in enumerate(test_loader):
             outputs = model(image)
             # return (value, index) tuple, only need the 2nd member
-            _, predicteds = torch.max(outputs, 1)  # return max, reduce to one dim
+            _, predicted = torch.max(outputs, 1)  # return max, reduce to one dim
             # use argmax to convert onehot representation to regular integer label
-            int_labels = torch.argmax(label)
+            int_label = torch.argmax(label)
             if test_log == True:
+                if train_idx == 0:
+                    print("======")
+                print(f"[PRED {train_idx+1}]: {predicted.item()}")
+                print(f"[LABEL {train_idx+1}]: {int_label}")
                 print("======")
-                print(f"[PRED {train_idx+1}]: {predicteds.item()}")
-                print(f"[LABEL {train_idx+1}]: {int_labels}")
-                print("")
-            print(int_labels)
             num_samples += label.size(0)
-            num_correct += (predicteds == int_labels).sum().item()
+            num_correct += (predicted == int_label).sum().item()
     print(f"NUMBER OF TEST SAMPLES: {num_samples}")
     print(f"NUMBER OF CORRECT PREDICTIONS: {num_correct}")
     acc = (num_correct) / (num_samples)

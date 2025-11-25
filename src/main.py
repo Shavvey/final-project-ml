@@ -1,5 +1,6 @@
 import network.cnn_train_test as ttcnn
 import network.cnn as cnn
+import torch
 
 
 def main():
@@ -8,11 +9,9 @@ def main():
     train_dataset, test_dataset = ttcnn.train_test_split(
         [0.8, 0.2], ttcnn.IMAGE_TRANSFORM
     )
-    # instantiate model
     model = cnn.CNN()
-    # train the model
-    model = ttcnn.train_network(model, train_dataset, 10, 24)
-    # test the model
+    # NOTE: saving state dict as local vars will return invalid keys
+    model.load_state_dict(torch.load("./models/CNN_model1.pth", weights_only=True))
     ttcnn.test_network(model, test_dataset, test_log=True)
 
 

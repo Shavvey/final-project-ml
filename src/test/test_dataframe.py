@@ -1,5 +1,5 @@
 import unittest
-from src.data.dataframe import DataFrame, DATA_DIRECTORY
+from data.dataframe import DataFrame, DATA_DIRECTORY
 from PIL import Image
 
 
@@ -13,6 +13,7 @@ class TestDataFrame(unittest.TestCase):
         # open with stored absolute path
         with Image.open(DATA_DIRECTORY + "/" + dfs[0].filename) as im2:
             assert im1.__hash__ == im2.__hash__
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -3,10 +3,7 @@ import numpy as np
 from numpy.typing import NDArray
 from torchvision import transforms
 import data.dataframe as df
-from data.dataset import ACRIMA, Dataset
-
-COMPRESSED_LABELS_FILE = "ACRIMA_data/serialized/labels.npz"
-COMPRESSED_IMAGES_FILE = "ACRIMA_data/serialized/images_350.npz"
+from data.dataset import ACRIMA
 
 
 def get_labels_and_images() -> tuple[NDArray, NDArray]:
@@ -17,7 +14,8 @@ def get_labels_and_images() -> tuple[NDArray, NDArray]:
 
 
 def get_ACRIMA(
-    transform: Optional[transforms.Compose] = None, from_serialized_npz: Optional[bool] = None
+    transform: Optional[transforms.Compose] = None,
+    from_serialized_npz: Optional[bool] = None,
 ) -> ACRIMA:
     if from_serialized_npz == None:
         images, labels = get_labels_and_images()
@@ -26,4 +24,12 @@ def get_ACRIMA(
         else:
             return ACRIMA(images, labels, transform)
     else:
+        # TODO: implement npz compression and uncompression
+        # this will improve IO performance
         raise Exception("Not implemented yet!")
+
+
+def serialize_into_npz_arrays(npz_array_path: str):
+    FILEPATH: str = npz_array_path + "ACRIMA.npz"
+    images, labels = get_labels_and_images()
+    np.savez_compressed(FILEPATH, images=images, labels=labels)

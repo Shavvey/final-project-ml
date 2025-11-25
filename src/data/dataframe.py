@@ -5,14 +5,18 @@ import numpy as np
 import numpy.typing as npt
 
 DATA_DIRECTORY = "ACRIMA_data"
-RESIZE_DIMS = (350, 350)
+RESIZE_DIMS = (350, 350)  # default resize dims (uses bicubic resampler)
 
 
 @dataclass(frozen=True)  # ensures dataframe is read only
 class DataFrame:
-    image_array: npt.NDArray
+    """
+    Helper class that retrieves and encapsulates ACRIMA images.
+    """
+
+    image_array: npt.NDArray  # array that stores pixel data (format: HxWxC)
     g_label: bool  # either gluacoma (1) or not gluaomcoma (0)
-    filename: str
+    filename: str  # filename given inside image directory
 
     @staticmethod
     def _df_from_image(image_path: Path) -> "DataFrame":
