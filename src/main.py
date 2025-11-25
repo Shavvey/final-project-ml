@@ -11,9 +11,9 @@ def main():
     # instantiate model
     model = cnn.CNN()
     # train the model
-    model = ttcnn.train_network(model, train_dataset, 1, 24)
+    model = ttcnn.train_network(model, train_dataset, 10, 24)
     # test the model
-    ttcnn.test_network(model, test_dataset)
+    ttcnn.test_network(model, test_dataset, test_log=True)
 
 
 if __name__ == "__main__":
