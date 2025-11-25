@@ -1,11 +1,12 @@
 import torch
+from torch.utils.data import Subset
 import torch.optim as optim
 import torch.nn as nn
 import torchvision.transforms as transforms
 from typing import Optional
 
 from data.make_data import get_ACRIMA
-from network.nn import CNN
+from network.cnn import CNN
 
 
 # NOTE: we may need to implement are own transform for ACRIMA class later?
@@ -20,8 +21,16 @@ def init_device(verbose: Optional[bool] = None):
     if verbose == True:
         print(device)
 
+def train_test_split(split_ratios: list[float]) -> tuple[Subset, Subset]:
+    full_dataset = get_ACRIMA(transform = IMAGE_TRANSFORM)
+    train_dataset, test_dataset = torch.utils.data.random_split(
+        full_dataset, split_ratios
+    )
+    return train_dataset, test_dataset
+    
 
-def train(epochs: int):
+
+def train_network(model: CNN, epochs: int, num_batches: int):
     init_device()
     criterion = nn.BCEWithLogitsLoss()
     # create model
@@ -33,7 +42,7 @@ def train(epochs: int):
         full_dataset, [0.8, 0.2]
     )
     train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=20, shuffle=True
+        train_dataset, batch_size=num_batches, shuffle=True
     )
     for epoch in range(epochs):
         running_loss = 0.0
@@ -53,5 +62,11 @@ def train(epochs: int):
             # find the running loss
             running_loss += loss.item()
             if batch_idx % 5 == 0:    # print every 2000 mini-batches
-                print(f'[{epoch + 1}, {batch_idx + 1:5d}] loss: {running_loss / 20:.3f}')
+                print(f'[{epoch + 1}, {batch_idx + 1:5d}] loss: {running_loss / num_batches:.3f}')
                 running_loss = 0.0
+    # save the trained network
+    PATH = "/models/CNN_1net.pth"
+    torch.save(model.state_dict(), PATH)
+
+def train(model: CNN):
+    pass

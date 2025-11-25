@@ -1,11 +1,7 @@
-from data.dataset import ACRIMA, Dataset
-from data.dataframe import DataFrame, DATA_DIRECTORY
-from PIL import Image
-from network.train_test import train
-
+import network.cnn_train_test as tt
+import network.cnn as cnn
 
 def main():
-    train(5)
 
 
 if __name__ == "__main__":
