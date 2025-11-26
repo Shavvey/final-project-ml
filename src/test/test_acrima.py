@@ -4,7 +4,6 @@ import data.make_data as make
 import numpy as np
 import matplotlib.pyplot as pp
 import torch
-import torchvision
 
 
 class TestACRIMADataset(unittest.TestCase):
@@ -17,9 +16,13 @@ class TestACRIMADataset(unittest.TestCase):
         )
         # retreive dataset, do a basic transform
         dataset = make.get_ACRIMA(EXAMPLE_TRANSFORM)
-        # show one of theimages from dataset, for fun
-        img = dataset.images[0]
-        pp.imshow(np.transpose(img, (0, 1, 2)))
+        data_loader = torch.utils.data.DataLoader(dataset)
+        dataiter = iter(data_loader)
+        image, _ = next(dataiter)
+        # take image out of batch should get (C x H x W) numpy arr
+        npimg = image[0].numpy()
+        npimg = npimg / 2 + 0.5  # un-normalize, range [0,1]
+        pp.imshow(np.transpose(npimg, (1, 2, 0)))  # tranpose to (W x H X C)
         pp.show()
 
 
