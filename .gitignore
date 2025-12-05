@@ -12,3 +12,4 @@ json
 csv
 # don't check dataset into VCS!
 ACRIMA_data
+models/**
