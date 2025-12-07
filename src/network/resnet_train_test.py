@@ -87,6 +87,8 @@ def test_network(
     test_loader = torch.utils.data.DataLoader(test_dataset)
 
     num_correct, num_samples = 0, 0
+    preds: list[int] = []
+    actuals: list[int] = []
     with torch.no_grad():
         for train_idx, (image, label) in enumerate(test_loader):
             outputs = model(image)
@@ -94,6 +96,8 @@ def test_network(
             _, predicted = torch.max(outputs, 1)  # return max, reduce to one dim
             # use argmax to convert onehot representation to regular integer label
             int_label = torch.argmax(label)
+            preds.append(int(predicted.item()))
+            actuals.append(int(int_label.item()))
             if test_log == True:
                 if train_idx == 0:
                     print("======")
@@ -106,3 +110,4 @@ def test_network(
     print(f"NUMBER OF CORRECT PREDICTIONS: {num_correct}")
     acc = (num_correct) / (num_samples)
     print(f"ACCURACY ON TEST SAMPLES: {acc* 100:.3f}%")
+    return preds, actuals
