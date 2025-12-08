@@ -1,5 +1,5 @@
 import scripts.stats as stats
-import network.resnet_train_test as tt
+import network.cnn_train_test as tt
 
 
 
