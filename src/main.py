@@ -1,11 +1,7 @@
-import scripts.stats as stats
-import scripts.images as imgs
-
+import network.resnet_train_test as tt
 
 def main():
-    # stats.confusion_matrix_rgb_cnn()
-    imgs.image_color_histogram()
-    imgs.image_color_histogram_normalized()
+    tt.train_test([0.8, 0.2], 3, 6)
 
 
 if __name__ == "__main__":

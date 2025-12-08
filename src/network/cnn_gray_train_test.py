@@ -1,9 +1,12 @@
 import torch
-from torch.utils.data import Subset
+from torch.utils.data import Subset, Dataset
 import torch.optim as optim
 import torch.nn as nn
 import torchvision.transforms as transforms
 from typing import Optional
+import sklearn.metrics as metrics
+import data.sub_transform as st
+import data.dataset as dataset
 
 from torchvision.transforms.transforms import Compose
 
@@ -11,7 +14,7 @@ from data.make_data import get_ACRIMA
 from network.cnn_gray import CNNGray
 
 # basic image transform, throws pixel data into tensor then normalizes rgb channel
-IMAGE_TRANSFORM = transforms.Compose(
+BASE_TRANSFORM = transforms.Compose(
     [
         transforms.ToTensor(),
         transforms.Grayscale(),
@@ -41,7 +44,7 @@ def train_test_split(
 
 def train_network(
     model: CNNGray,
-    train_dataset: Subset,
+    train_dataset: Subset | Dataset,
     epochs: int,
     num_batches: int,
     save_path: Optional[str] = None,
@@ -83,7 +86,7 @@ def train_network(
 
 
 def test_network(
-    model: CNNGray, test_dataset: Subset, test_log: Optional[bool] = None
+    model: CNNGray, test_dataset: Subset | Dataset, test_log: Optional[bool] = None
 ) -> tuple[list[int], list[int]]:
     # set model into eval mode
     model.eval()
@@ -114,3 +117,17 @@ def test_network(
     acc = (num_correct) / (num_samples)
     print(f"ACCURACY ON TEST SAMPLES: {acc* 100:.3f}%")
     return preds, actuals
+
+
+def train_test(split_ratio: list[float], epochs: int, batch_size):
+    model = CNNGray()
+    train_dataset, test_dataset = train_test_split(split_ratio, BASE_TRANSFORM)
+    mean, std = dataset.calc_mean_std(train_dataset)
+    print(mean, std)
+    # apply normalization to train and test, after computing normal and std using train
+    NORMAL_TRANSFORM = transforms.Compose([transforms.Normalize(mean, std)])
+    train = st.SubsetTransform(train_dataset, transform=NORMAL_TRANSFORM)
+    test = st.SubsetTransform(test_dataset, transform=NORMAL_TRANSFORM)
+    model = train_network(model, train, epochs, batch_size)
+    preds, actuals = test_network(model, test)
+    cm = metrics.confusion_matrix(actuals, preds)
