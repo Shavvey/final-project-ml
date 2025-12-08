@@ -127,4 +127,4 @@ def train_test(split_ratio: list[float], epochs: int, batch_size: int):
     test = st.SubsetTransform(test_dataset, transform=NORMAL_TRANSFORM)
     model = train_network(model, train, epochs, batch_size)
     preds, actuals = test_network(model, test)
-    cm = metrics.confusion_matrix(actuals, preds)
+    return preds, actuals

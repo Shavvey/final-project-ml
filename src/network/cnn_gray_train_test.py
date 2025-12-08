@@ -119,7 +119,7 @@ def test_network(
     return preds, actuals
 
 
-def train_test(split_ratio: list[float], epochs: int, batch_size):
+def train_test(split_ratio: list[float], epochs: int, batch_size: int):
     model = CNNGray()
     train_dataset, test_dataset = train_test_split(split_ratio, BASE_TRANSFORM)
     mean, std = dataset.calc_mean_std(train_dataset)
@@ -130,4 +130,4 @@ def train_test(split_ratio: list[float], epochs: int, batch_size):
     test = st.SubsetTransform(test_dataset, transform=NORMAL_TRANSFORM)
     model = train_network(model, train, epochs, batch_size)
     preds, actuals = test_network(model, test)
-    cm = metrics.confusion_matrix(actuals, preds)
+    return preds, actuals
