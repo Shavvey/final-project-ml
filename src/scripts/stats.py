@@ -24,11 +24,13 @@ def confusion_matrix_rgb_cnn():
     pp.show()
 
 
-def confusion_matrix(preds, actuals):
+def confusion_matrix(preds, actuals, path=""):
     cm = metrics.confusion_matrix(actuals, preds)
     disp = metrics.ConfusionMatrixDisplay(cm)
     disp.plot()
+    pp.savefig(f"{path}_cm.png", dpi=300, bbox_inches='tight')
     pp.show()
+
 
 
 def classification_report(preds, actuals):

@@ -115,7 +115,7 @@ def test_network(
     return preds, actuals
 
 
-def train_test(split_ratio: list[float], epochs: int, batch_size: int):
+def train_test(split_ratio: list[float], epochs: int, batch_size: int, model_path="models/resnet.pth"):
     model = resnet.ResNet152(2)
     train_dataset, test_dataset = train_test_split(split_ratio, BASE_TRANSFORM)
     mean, std = dataset.calc_mean_std(train_dataset)
@@ -123,6 +123,6 @@ def train_test(split_ratio: list[float], epochs: int, batch_size: int):
     NORMAL_TRANSFORM = transforms.Compose([transforms.Normalize(mean, std)])
     train = st.SubsetTransform(train_dataset, transform=NORMAL_TRANSFORM)
     test = st.SubsetTransform(test_dataset, transform=NORMAL_TRANSFORM)
-    model = train_network(model, train, epochs, batch_size, "models/resnet.pth")
+    model = train_network(model, train, epochs, batch_size, model_path)
     preds, actuals = test_network(model, test)
     return preds, actuals

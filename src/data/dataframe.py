@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 import numpy.typing as npt
 
-DATA_DIRECTORY = "ACRIMA_data"
+DATA_DIRECTORY = "/content/drive/MyDrive/ML-Final-Project/ACRIMA_data"
 RESIZE_DIMS = (350, 350)  # default resize dims (uses bicubic resampler)
 
 
