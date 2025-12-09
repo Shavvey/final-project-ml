@@ -1,4 +1,3 @@
-import torchvision
 import data.make_data as make
 import torch
 import torchvision.transforms as transforms
@@ -29,8 +28,8 @@ def image_color_histogram():
     print(mean, std)
 
     pp.hist(np_imgs.ravel(), bins=50, density=True)
-    pp.xlabel("RGB (0-255) Pixle Values")
-    pp.ylabel("Frequency")
+    pp.xlabel("RGB (0-255) Pixel Values")
+    pp.ylabel("Relative Frequency")
     pp.show()
 
 
@@ -47,6 +46,6 @@ def image_color_histogram_normalized():
     images, labels = next(dataiter)
     np_imgs = np.array(images)
     pp.hist(np_imgs.ravel(), bins=50, density=True)
-    pp.xlabel("RGB (0-255) Pixle Values")
-    pp.ylabel("Frequency")
+    pp.xlabel("RGB (0-255) Pixel Values")
+    pp.ylabel("Relative Frequency")
     pp.show()
