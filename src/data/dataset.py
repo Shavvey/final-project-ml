@@ -39,7 +39,7 @@ def calc_mean_std(subset: Subset) -> tuple[float, float]:
     """Calculate mean and standard deviation for slice of dataset"""
     data_loader = torch.utils.data.DataLoader(subset, len(subset))
     dataiter = iter(data_loader)
-    images, labels = next(dataiter)
+    images, _ = next(dataiter)
     mean, std = 0.0, 0.0
     for image in images:
         mean += image.mean([1, 2])
