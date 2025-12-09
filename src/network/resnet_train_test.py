@@ -4,7 +4,6 @@ import torch.optim as optim
 import torch.nn as nn
 import torchvision.transforms as transforms
 from typing import Optional
-import sklearn.metrics as metrics
 import data.sub_transform as st
 import data.dataset as dataset
 
@@ -125,6 +124,6 @@ def train_test(split_ratio: list[float], epochs: int, batch_size: int):
     NORMAL_TRANSFORM = transforms.Compose([transforms.Normalize(mean, std)])
     train = st.SubsetTransform(train_dataset, transform=NORMAL_TRANSFORM)
     test = st.SubsetTransform(test_dataset, transform=NORMAL_TRANSFORM)
-    model = train_network(model, train, epochs, batch_size)
+    model = train_network(model, train, epochs, batch_size, "models/resnet.pth")
     preds, actuals = test_network(model, test)
     return preds, actuals
